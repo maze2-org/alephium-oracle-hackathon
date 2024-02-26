@@ -34,6 +34,16 @@ npm run build && node dist/src/operator-fullfill-requests.js
 npm run build && node dist/src/minimalist-exchange-process.js
 ```
 
+## Nextjs add example
+
+You can also run the dapp example : https://github.com/maze2-org/alephium-hackathon-webapp.git
+
+This app is an example of how to run a dapp which consume the oracle price feeder.
+It also shows how to add / remove consumer for the subscription
+
+
+
+
 ## Start a local devnet for testing and development
 
 Please refer to the documentation here: <https://wiki.alephium.org/full-node/devnet>
