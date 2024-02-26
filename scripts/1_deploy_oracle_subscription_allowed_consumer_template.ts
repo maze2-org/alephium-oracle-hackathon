@@ -13,7 +13,8 @@ const deployOracleSubscriptionAllowedConsumerTemplate: DeployFunction<Settings> 
   const result = await deployer.deployContract(OracleSubscriptionAllowedConsumer, {
     // The initial states of the faucet contract
     initialFields: {
-      consumerAddress: deployer.account.address
+      consumerAddress: deployer.account.address,
+      subscription: Buffer.from('').toString('hex')
     }
   })
 }

@@ -16,6 +16,7 @@ import { default as CompletePriceFetchScriptJson } from "../usage-example/script
 import { default as FetchPriceScriptJson } from "../usage-example/scripts/FetchPrice.ral.json";
 import { default as FulfillPriceRequestScriptJson } from "../oracles/tx-scripts/FulfillPriceRequest.ral.json";
 import { default as RegisterSubscriptionScriptJson } from "../oracles/tx-scripts/RegisterSubscription.ral.json";
+import { default as RemoveAllowedConsumerScriptJson } from "../oracles/tx-scripts/RemoveAllowedConsumer.ral.json";
 import { default as RequestPriceScriptJson } from "../oracles/tx-scripts/RequestPrice.ral.json";
 
 export const AddAllowedConsumer = new ExecutableScript<{
@@ -36,6 +37,10 @@ export const FulfillPriceRequest = new ExecutableScript<{
 export const RegisterSubscription = new ExecutableScript<{
   operator: HexString;
 }>(Script.fromJson(RegisterSubscriptionScriptJson));
+export const RemoveAllowedConsumer = new ExecutableScript<{
+  subscription: HexString;
+  address: Address;
+}>(Script.fromJson(RemoveAllowedConsumerScriptJson));
 export const RequestPrice = new ExecutableScript<{
   subscription: HexString;
   from: HexString;

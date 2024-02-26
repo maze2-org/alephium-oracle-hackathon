@@ -2,10 +2,24 @@
  // If the address which calls a subsciption is not stored into an OracleSubscriptionAllowedConsumer, the transaction is refused
 
 Contract OracleSubscriptionAllowedConsumer (
-    consumerAddress: Address
+    consumerAddress: Address,
+    subscription: OracleSubscription
 ) {
+    enum ErrorCodes {
+        InvalidCaller = 1
+    }
+
     // Function to get the consumer address
     pub fn getConsumerAddress() -> Address {
         return consumerAddress
+    }
+
+    @using(assetsInContract = true)
+    pub fn destroy() -> () {
+        emit Debug(`Entering destroy`)
+        emit Debug(`caller contract id: ${callerContractId!()}`)
+        emit Debug(`Subscription contract id: ${contractId!(subscription)}`)
+        checkCaller!(contractId!(subscription) == callerContractId!(), ErrorCodes.InvalidCaller)
+        destroySelf!(subscription.getOwner())
     }
 }

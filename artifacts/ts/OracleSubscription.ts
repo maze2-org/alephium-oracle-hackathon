@@ -45,6 +45,10 @@ export namespace OracleSubscriptionTypes {
     address: Address;
     deployedContractId: HexString;
   }>;
+  export type RemovedAllowedCallerEvent = ContractEvent<{
+    subscriptionContractId: HexString;
+    address: Address;
+  }>;
 
   export interface CallMethodTable {
     getSubscriptionId: {
@@ -94,7 +98,7 @@ class Factory extends ContractFactory<
     return this.contract.getInitialFieldsWithDefaultValues() as OracleSubscriptionTypes.Fields;
   }
 
-  eventIndex = { NewAllowedCaller: 0 };
+  eventIndex = { NewAllowedCaller: 0, RemovedAllowedCaller: 1 };
   consts = { ErrorCodes: { InvalidCaller: BigInt(1) } };
 
   at(address: string): OracleSubscriptionInstance {
@@ -133,6 +137,14 @@ class Factory extends ContractFactory<
       >
     ): Promise<TestContractResult<null>> => {
       return testMethod(this, "addAllowedCaller", params);
+    },
+    removeAllowedCaller: async (
+      params: TestContractParams<
+        OracleSubscriptionTypes.Fields,
+        { consumerAddress: Address }
+      >
+    ): Promise<TestContractResult<null>> => {
+      return testMethod(this, "removeAllowedCaller", params);
     },
     setOwner: async (
       params: TestContractParams<
@@ -173,8 +185,8 @@ class Factory extends ContractFactory<
 export const OracleSubscription = new Factory(
   Contract.fromJson(
     OracleSubscriptionContractJson,
-    "=14-2+b3=2-6+c3=2-2+cc=3-1+34177=89-1+3=16+ce017e0312416464696e67206e65772063616c6c657220402f20746f20746865206c697374206f6620616c6c6f7765642063616c6c6572206f6620737562736372697074696f6e20001600=210+3116007e0=1+402042616=1+616e636520696e20737562736372697074696f6e207265717565737420001600a47e021172656d61696e696e6720746f6b656e732000=156",
-    "9c28ffccbea3da1527944a170bcc7d9e80f4d58f5bf243e94abf3a747d81872c"
+    "=14-2+b=1-2=1-3+11f=1+12f=1-3+138=1-2+1=1+f=2-2+ee=89-1+4=16+ce017e0312416464696e67206e65772063616c6c657220402f20746f20746865206c697374206f6620616c6c6f7765642063616c6c6572206f6620737562736372697074696f6e20001600=115-1+b=16+ce017e030e52656d6f76652063616c6c657220402866726f6d2074686520616c6c6f7765642063616c6c6572206f6620737562736372697074696f6e20001600=167-1+a=22+16007e02402042616c616e636520696e20737562736372697074696f6e207265717565737420001600a47e021172656d61696e696e6720746f6b656e732000=156",
+    "13470377bdb0612659c4261e3f542642353ad1472bc3b17ac33ee0262960a2bf"
   )
 );
 
@@ -201,6 +213,34 @@ export class OracleSubscriptionInstance extends ContractInstance {
       this,
       options,
       "NewAllowedCaller",
+      fromCount
+    );
+  }
+
+  subscribeRemovedAllowedCallerEvent(
+    options: EventSubscribeOptions<OracleSubscriptionTypes.RemovedAllowedCallerEvent>,
+    fromCount?: number
+  ): EventSubscription {
+    return subscribeContractEvent(
+      OracleSubscription.contract,
+      this,
+      options,
+      "RemovedAllowedCaller",
+      fromCount
+    );
+  }
+
+  subscribeAllEvents(
+    options: EventSubscribeOptions<
+      | OracleSubscriptionTypes.NewAllowedCallerEvent
+      | OracleSubscriptionTypes.RemovedAllowedCallerEvent
+    >,
+    fromCount?: number
+  ): EventSubscription {
+    return subscribeContractEvents(
+      OracleSubscription.contract,
+      this,
+      options,
       fromCount
     );
   }

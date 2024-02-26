@@ -31,6 +31,7 @@ import { getContractByCodeHash } from "./contracts";
 export namespace OracleSubscriptionAllowedConsumerTypes {
   export type Fields = {
     consumerAddress: Address;
+    subscription: HexString;
   };
 
   export type State = ContractState<Fields>;
@@ -63,6 +64,8 @@ class Factory extends ContractFactory<
     return this.contract.getInitialFieldsWithDefaultValues() as OracleSubscriptionAllowedConsumerTypes.Fields;
   }
 
+  consts = { ErrorCodes: { InvalidCaller: BigInt(1) } };
+
   at(address: string): OracleSubscriptionAllowedConsumerInstance {
     return new OracleSubscriptionAllowedConsumerInstance(address);
   }
@@ -79,6 +82,17 @@ class Factory extends ContractFactory<
     ): Promise<TestContractResult<Address>> => {
       return testMethod(this, "getConsumerAddress", params);
     },
+    destroy: async (
+      params: Omit<
+        TestContractParams<
+          OracleSubscriptionAllowedConsumerTypes.Fields,
+          never
+        >,
+        "testArgs"
+      >
+    ): Promise<TestContractResult<null>> => {
+      return testMethod(this, "destroy", params);
+    },
   };
 }
 
@@ -86,8 +100,8 @@ class Factory extends ContractFactory<
 export const OracleSubscriptionAllowedConsumer = new Factory(
   Contract.fromJson(
     OracleSubscriptionAllowedConsumerContractJson,
-    "",
-    "e4ac1069a1aea968d177741c290e109285ba3771c8df9c94e07d80d328a4c0c3"
+    "=6-2+4068=29+f7e0110456e746572696e672064657374726f79b37e021463616c6c657220636f6e74726163742069643=1+2000ce017e021a537562736372697074696f6e20636f6e74726163742069643a2000=26",
+    "96e14ee270fdb4ee60633be70fb2e1a4c27e9fd900b31908817cd9c0415b877d"
   )
 );
 

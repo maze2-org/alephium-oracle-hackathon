@@ -1,6 +1,6 @@
 import { Deployer, DeployFunction, Network } from '@alephium/cli'
 import configuration, { Settings } from '../alephium.config'
-import { MinimalistExchange, AddAllowedConsumer, RegisterSubscription } from '../artifacts/ts'
+import { MinimalistExchange, AddAllowedConsumer, RegisterSubscription, RemoveAllowedConsumer } from '../artifacts/ts'
 import { addressFromContractId, ExecuteScriptResult, ONE_ALPH, web3 } from '@alephium/web3'
 import { PrivateKeyWallet } from '@alephium/web3-wallet'
 import { ContractEventsByTxId } from '@alephium/web3/dist/src/api/api-alephium'
@@ -29,7 +29,6 @@ const deployOracleOperator: DeployFunction<Settings> = async (
 
   let subscription: ExecuteScriptResult | null = null
   try {
-    console.log(exchangeOwnerSigner.address)
     // Submit a transaction to use the transaction script
     subscription = await RegisterSubscription.execute(exchangeOwnerSigner, {
       initialFields: { operator: oracleOperator.contractInstance.contractId },

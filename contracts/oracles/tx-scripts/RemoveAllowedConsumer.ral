@@ -1,0 +1,3 @@
+TxScript RemoveAllowedConsumer (subscription: OracleSubscription, address: Address) {
+    subscription.removeAllowedCaller(address)
+}

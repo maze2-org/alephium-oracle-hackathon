@@ -7,6 +7,7 @@ Contract OracleSubscription (
     mut requestId: U256
 ) {
     event NewAllowedCaller(subscriptionContractId: ByteVec, address: Address, deployedContractId: ByteVec)
+    event RemovedAllowedCaller(subscriptionContractId: ByteVec, address: Address)
 
     enum ErrorCodes {
         InvalidCaller = 1
@@ -37,7 +38,7 @@ Contract OracleSubscription (
         let path = toByteVec!(consumerAddress)
 
         if (!isConsumerAddressAllowed(consumerAddress)) {
-            let (encodedImmFields, encodedMutFields) = OracleSubscriptionAllowedConsumer.encodeFields!(consumerAddress)
+            let (encodedImmFields, encodedMutFields) = OracleSubscriptionAllowedConsumer.encodeFields!(consumerAddress, selfContract!())
             let contractId = copyCreateSubContract!{callerAddress!() -> ALPH: 1 alph}(
                 path,
                 subscriptionAllowedConsumerTemplateId,
@@ -46,7 +47,23 @@ Contract OracleSubscription (
             )
             emit NewAllowedCaller(selfContractId!(), consumerAddress, contractId)
         }
+    }
+    
+    
+    pub fn removeAllowedCaller(consumerAddress: Address) -> () {
+        checkCaller!(owner == callerAddress!(), ErrorCodes.InvalidCaller)
 
+        emit Debug(`Remove caller ${consumerAddress}from the allowed caller of subscription ${subscriptionId}`)
+
+        let path = toByteVec!(consumerAddress)
+
+        if (isConsumerAddressAllowed(consumerAddress)) {
+            let consumerSubcontractId = subContractId!(path)
+            let consumer = OracleSubscriptionAllowedConsumer(consumerSubcontractId)
+
+            consumer.destroy()
+            emit RemovedAllowedCaller(selfContractId!(), consumerAddress)
+        }
     }
 
     @using(updateFields = true)
@@ -64,8 +81,10 @@ Contract OracleSubscription (
         priceRequest.destroy()
     }
 
-    @using(preapprovedAssets = true, updateFields = true, checkExternalCaller = false)
+    @using(preapprovedAssets = true, updateFields = true)
     pub fn requestPrice(caller: Address, from: ByteVec, to: ByteVec) -> ByteVec {
+
+        checkCaller!(callerAddress!() == owner || isConsumerAddressAllowed(contractIdToAddress!(callerContractId!())), ErrorCodes.InvalidCaller)
 
         emit Debug(`Balance in subscription request ${caller}`)
         emit Debug(`remaining tokens ${tokenRemaining!(caller, ALPH)}`)
