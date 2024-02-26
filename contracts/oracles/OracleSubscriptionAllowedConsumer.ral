@@ -1,7 +1,11 @@
+ // OracleSubscriptionAllowedConsumer is a subcontract to store an authorized consumer for a subscription
+ // If the address which calls a subsciption is not stored into an OracleSubscriptionAllowedConsumer, the transaction is refused
+
 Contract OracleSubscriptionAllowedConsumer (
     consumerAddress: Address
 ) {
-   pub fn getConsumerAddress() -> Address {
-    return consumerAddress
-   }
+    // Function to get the consumer address
+    pub fn getConsumerAddress() -> Address {
+        return consumerAddress
+    }
 }

@@ -60,9 +60,7 @@ Contract OracleSubscription (
     }
 
     pub fn destroyPriceRequest(priceRequest: OraclePriceRequest) -> () {
-        emit Debug(`Caller: ${callerAddress!()}, contract calling: ${contractIdToAddress!(callerContractId!())}, contract allowed ? ${isConsumerAddressAllowed(contractIdToAddress!(callerContractId!()))}`)
         checkCaller!(callerAddress!() == owner || isConsumerAddressAllowed(contractIdToAddress!(callerContractId!())), ErrorCodes.InvalidCaller)
-        emit Debug(`Authorized...`)
         priceRequest.destroy()
     }
 
@@ -72,13 +70,12 @@ Contract OracleSubscription (
         emit Debug(`Balance in subscription request ${caller}`)
         emit Debug(`remaining tokens ${tokenRemaining!(caller, ALPH)}`)
 
-
         requestId = requestId + 1
 
-        let (encodedImmFields, encodedMutFields) = OraclePriceRequest.encodeFields!(selfContract!(), from, to, 0, 8, false)
+        let (encodedImmFields, encodedMutFields) = OraclePriceRequest.encodeFields!(selfContract!(), from, to, operator.getFees(), 0, 8, false)
         
-        // let contractId = copyCreateSubContract!{selfAddress!() -> ALPH: 4 alph}(
-        let contractId = copyCreateSubContract!{caller -> ALPH: 1 alph}(
+        // Requesting 1.5 alph to be sure to cover the 1 alph for storage + 0.5 to pay gas fees.The operator will take its comission when fulfilling the data
+        let contractId = copyCreateSubContract!{caller -> ALPH: 1.5 alph + operator.getFees()}(
             u256To16Byte!(requestId),
             priceRequestTemplateId,
             encodedImmFields,

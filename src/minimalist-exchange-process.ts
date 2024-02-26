@@ -59,7 +59,7 @@ const processMinimalistLogic = async () => {
       // Submit a transaction to use the transaction script
       const result = await FetchPrice.execute(signer, {
         initialFields: { myExchange: deployed.contractInstance.contractId },
-        attoAlphAmount: ONE_ALPH
+        attoAlphAmount: ONE_ALPH * 2n // One alph for storage (will be sent back after destroying), 0.5 to pay the gas fees for operator (the rest will be sent back also), 0.5 to pay the operator fees
       })
     }
 

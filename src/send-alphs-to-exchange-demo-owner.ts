@@ -33,7 +33,7 @@ const sendAlphsToExchangeDemoOwner = async () => {
 
   try {
     console.log('Sending funds to ', exchangeOwnerSigner.address)
-    await transferAlphTo(deployerSigner, exchangeOwnerSigner.address, ONE_ALPH * 10n)
+    await transferAlphTo(deployerSigner, exchangeOwnerSigner.address, ONE_ALPH * 1000n)
     console.log('Owner of the exchange :', exchangeOwnerSigner.address)
   } catch (error: any) {
     console.error(error.message)

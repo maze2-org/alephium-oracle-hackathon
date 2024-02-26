@@ -1,4 +1,4 @@
- // This contract shows how to use the oracle
+// This contract demonstrates how to interact with the oracle
 
 Contract MinimalistExchange (
     mut owner: Address,
@@ -7,69 +7,83 @@ Contract MinimalistExchange (
     mut priceRequestContractId: ByteVec
 ) {
 
+    // Event emitted when the ALPH price is updated
     event AlphPriceUpdated (newPrice: U256)
 
+    // Definition of error codes
     enum ErrorCodes {
         InvalidCaller = 1
         OracleDoesntExist = 2
         PriceRequestDoesntExist = 4
     }
 
+    // Function to set a new owner for the contract
     @using(updateFields = true)
     pub fn setNewOwner(newOwner: Address) -> () {
         checkCaller!(callerAddress!() == owner, ErrorCodes.InvalidCaller)
         owner = newOwner
     }
     
+    // Function to set a new subscription contract ID
     @using(updateFields = true)
     pub fn setNewsubScriptionContractId(newSubscriptionContractId: ByteVec) -> () {
         checkCaller!(callerAddress!() == owner, ErrorCodes.InvalidCaller)
         subscriptionContractId = newSubscriptionContractId
     }
 
+    // Function to get the ALPH price in USD
     pub fn getAlphPriceInUsd () -> U256 {
         return alphPriceInUsd
     }
 
-    fn getOracleSubscription() -> OracleSubscription {
+    // Function to get the OracleSubscription contract
+    pub fn getOracleSubscription() -> OracleSubscription {
         assert!(contractExists!(subscriptionContractId), ErrorCodes.OracleDoesntExist)
         return OracleSubscription(subscriptionContractId)
     }
+
+    // Function to get the OracleOperator contract
+    pub fn getOracleOperator() -> OracleOperator {
+        let subscription = getOracleSubscription()
+        return subscription.getOperator()
+    }
     
+    // Function to get the OraclePriceRequest contract
     fn getPriceRequest() -> OraclePriceRequest {
         assert!(contractExists!(priceRequestContractId), ErrorCodes.PriceRequestDoesntExist)
         return OraclePriceRequest(priceRequestContractId)
     }
 
+    // Function to fetch the ALPH price from the oracle
     @using(preapprovedAssets = true, updateFields = true)
     pub fn fetchPrice() -> () {
 
         let caller = callerAddress!()
-        emit Debug(`Comparing addressses: ${caller} ${owner}`)
+        emit Debug(`Comparing addresses: ${caller} ${owner}`)
         checkCaller!(caller == owner, ErrorCodes.InvalidCaller)
         let oracleSubscription = getOracleSubscription()
-
+        let operator = getOracleOperator()
+        
         emit Debug(`Comparing ${#}, ${priceRequestContractId}, ${# == priceRequestContractId}`)
+
         if (priceRequestContractId == #) {
-            priceRequestContractId = oracleSubscription.requestPrice{caller -> ALPH: 1 alph}(caller, b`ALPH`, b`USD`)
+            priceRequestContractId = oracleSubscription.requestPrice{caller -> ALPH: operator.getMinimumLockableAmountForFetchPrice()}(caller, b`ALPH`, b`USD`)
         } else {
             if (!contractExists!(priceRequestContractId)) {
-                priceRequestContractId = oracleSubscription.requestPrice{caller -> ALPH: 1 alph}(caller, b`ALPH`, b`USD`)
+                priceRequestContractId = oracleSubscription.requestPrice{caller -> ALPH: operator.getMinimumLockableAmountForFetchPrice()}(caller, b`ALPH`, b`USD`)
             }
         }
         emit Debug(`Result is ${priceRequestContractId}`)
     }
 
+    // Function to complete the fetch price process. Retrieves the price into the contract itself and removes the subcontract used for request storage
     @using(updateFields = true)
     pub fn completeFetchProcess() -> () {
         checkCaller!(callerAddress!() == owner, ErrorCodes.InvalidCaller)
         let priceRequest = getPriceRequest()
         let oracleSubscription = getOracleSubscription()
-        emit Debug(`Handling price request ${priceRequest}`)
-        emit Debug(`Fulfilled ? ${priceRequest.getFulfilled()}`)
+
         if (priceRequest.getFulfilled()) {
-            emit Debug(`Price was fulfilled`)
-            emit Debug(`amoount: ${priceRequest.getAmount()}`)
             alphPriceInUsd = priceRequest.getAmount()
             emit AlphPriceUpdated(alphPriceInUsd)
 

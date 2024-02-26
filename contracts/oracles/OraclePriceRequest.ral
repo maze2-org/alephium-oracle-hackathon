@@ -1,50 +1,75 @@
+ // OraclePriceRequest is a subcontract to store a price request
+ // This is basically a request to be fulfilled by an operator
+
 Contract OraclePriceRequest (
     subscription: OracleSubscription,
     from: ByteVec,
     to: ByteVec,
+    oracleFees: U256,
     mut amount: U256,
     mut decimals: U256,
     mut fulfilled: Bool
 ) {
+    // Event emitted when a request is fulfilled
     event RequestFulfilled(subscription: OracleSubscription, from: ByteVec, to: ByteVec, amount: U256, fulfilled: Bool)
 
+    // Definition of error codes
     enum ErrorCodes {
         InvalidCaller = 1
     }
 
+    // Function to get the fulfillment status of the request
     pub fn getFulfilled() -> Bool {
-        emit Debug(`GETFULFILLEDDDDDDDDDDDDDDDD returns ${fulfilled}`)
         return fulfilled
     }
 
+    // Function to get the fees paid to the oracle
+    pub fn getOracleFees() -> U256 {
+        return oracleFees
+    }
+
+    // Function for testing/debugging purposes
     pub fn testDebug() -> Bool {
-        emit Debug(`GETFULFILLEDDDDDDDDDDDDDDDD returns ${fulfilled}`)
         return true
     }
 
+    // Function to get the amount in the request
     pub fn getAmount() -> U256 {
         return amount
     }
 
+    // Function to destroy the contract
     @using(assetsInContract = true)
     pub fn destroy() -> () {
-        emit Debug(`Destoying ${selfAddress!()}, sending funds back to ${subscription.getOwner()}`)
-        emit Debug(`caller: ${callerContractId!()} should be ${contractId!(subscription)}`)
-        // checkCaller!(callerAddress!(), requestedByContractAddress, ErrorCodes.InvalidCaller)
+        emit Debug(`Destroying ${selfAddress!()}, sending funds back to ${subscription.getOwner()}`)
+        emit Debug(`Caller: ${callerContractId!()} should be ${contractId!(subscription)}`)
         let callerContractAddress = contractIdToAddress!(callerContractId!())
 
+        // Verifies if the caller is allowed to destroy the contract 
         checkCaller!(contractAddress!(subscription) == callerContractAddress, ErrorCodes.InvalidCaller)
         destroySelf!(subscription.getOwner())
     }
 
-    @using(updateFields = true)
-    pub fn fulfill(retrievedAmount: U256, amountDecimals: U256) -> () {
-        emit Debug(`Fulfilling the request....., ${retrievedAmount}, ${amountDecimals}`)
+    // Function to fulfill the price request
+    @using(updateFields = true, assetsInContract = true)
+    pub fn fulfill(lastKnownPrice: U256, amountDecimals: U256) -> () {
+        emit Debug(`Fulfilling the request..., ${lastKnownPrice}, ${amountDecimals}`)
+        
+        // Verifies if the caller is allowed to fulfill the request
         checkCaller!(subscription.getOperator().getManager() == callerAddress!(), ErrorCodes.InvalidCaller)
-        amount = retrievedAmount
+
+        // Updates the amount and decimals with the provided values
+        amount = lastKnownPrice
         decimals = amountDecimals
         fulfilled = true
+
         emit Debug(`Fulfilled request ${fulfilled}, ${true}`)
         emit RequestFulfilled(subscription, from, to, amount, fulfilled)
+
+        // Calculate the fees to be sent to the operator and send them
+        let amountForOperator = oracleFees + txGasFee!()
+        emit Debug(`Will pay the oracle manager ${subscription.getOperator().getManager()} for ${amountForOperator} ALPHs`)
+        transferTokenFromSelf!(subscription.getOperator().getManager(), ALPH, amountForOperator)
+        emit Debug(`Funds sent...`)
     }
 }

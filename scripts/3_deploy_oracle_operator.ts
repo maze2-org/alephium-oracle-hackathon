@@ -21,7 +21,7 @@ const deployOracleOperator: DeployFunction<Settings> = async (
       subscriptionTemplateId: subscriptionTemplate.contractInstance.contractId,
       priceRequestTemplateId: priceRequestTemplate.contractInstance.contractId,
       subscriptionAllowedConsumerTemplateId: subscriptionAllowedConsumerTemplate.contractInstance.contractId,
-      fees: ONE_ALPH / 2n,
+      fees: ONE_ALPH / 2n, // Oracle fees are currently 0.5 alph
       manager: deployer.account.address
     }
   })

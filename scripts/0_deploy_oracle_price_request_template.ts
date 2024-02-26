@@ -17,7 +17,8 @@ const deployOraclePriceRequestTemplate: DeployFunction<Settings> = async (
       from: Buffer.from('ALPH', 'utf-8').toString('hex'),
       to: Buffer.from('USDT', 'utf-8').toString('hex'),
       fulfilled: false,
-      subscription: Buffer.from('', 'utf-8').toString('hex')
+      subscription: Buffer.from('', 'utf-8').toString('hex'),
+      oracleFees: 0n
     }
   })
   console.log('Oracle price request contract id: ' + result.contractInstance.contractId)

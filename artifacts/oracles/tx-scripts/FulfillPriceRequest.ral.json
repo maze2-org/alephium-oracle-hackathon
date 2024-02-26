@@ -1,7 +1,7 @@
 {
   "version": "v2.8.3",
   "name": "FulfillPriceRequest",
-  "bytecodeTemplate": "01010300000006{1}{2}0e0c{0}0104",
+  "bytecodeTemplate": "01010300000006{1}{2}0e0c{0}0105",
   "fieldsSig": {
     "names": [
       "priceRequest",

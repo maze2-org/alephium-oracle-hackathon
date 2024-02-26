@@ -52,6 +52,10 @@ export namespace OracleOperatorTypes {
   }>;
 
   export interface CallMethodTable {
+    getMinimumLockableAmountForFetchPrice: {
+      params: Omit<CallContractParams<{}>, "args">;
+      result: CallContractResult<bigint>;
+    };
     getManager: {
       params: Omit<CallContractParams<{}>, "args">;
       result: CallContractResult<Address>;
@@ -102,6 +106,14 @@ class Factory extends ContractFactory<
       >
     ): Promise<TestContractResult<null>> => {
       return testMethod(this, "setNewManager", params);
+    },
+    getMinimumLockableAmountForFetchPrice: async (
+      params: Omit<
+        TestContractParams<OracleOperatorTypes.Fields, never>,
+        "testArgs"
+      >
+    ): Promise<TestContractResult<bigint>> => {
+      return testMethod(this, "getMinimumLockableAmountForFetchPrice", params);
     },
     getManager: async (
       params: Omit<
@@ -159,7 +171,7 @@ export const OracleOperator = new Factory(
   Contract.fromJson(
     OracleOperatorContractJson,
     "",
-    "77b91eba3bf58081f81c73ddf2a8f86fed041df25ec13e55447d138001c34083"
+    "f047354e9fbe5dc6bf5c9d5b2cc92c8c6b62f4bf362f001244e2255bdd3ed68e"
   )
 );
 
@@ -219,6 +231,19 @@ export class OracleOperatorInstance extends ContractInstance {
   }
 
   methods = {
+    getMinimumLockableAmountForFetchPrice: async (
+      params?: OracleOperatorTypes.CallMethodParams<"getMinimumLockableAmountForFetchPrice">
+    ): Promise<
+      OracleOperatorTypes.CallMethodResult<"getMinimumLockableAmountForFetchPrice">
+    > => {
+      return callMethod(
+        OracleOperator,
+        this,
+        "getMinimumLockableAmountForFetchPrice",
+        params === undefined ? {} : params,
+        getContractByCodeHash
+      );
+    },
     getManager: async (
       params?: OracleOperatorTypes.CallMethodParams<"getManager">
     ): Promise<OracleOperatorTypes.CallMethodResult<"getManager">> => {

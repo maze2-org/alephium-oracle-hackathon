@@ -29,7 +29,9 @@ const fulfillPriceRequests = async () => {
     process.exit(1)
   }
 
-  const operator = OracleOperator.at(deployed?.contractInstance.address)
+  const operator = OracleOperator.at(deployed.contractInstance.address)
+  console.log('Operator address : ', deployed.contractInstance.address)
+
   const network = configuration.currentNetwork
   const privateKey = configuration.networks[network].privateKeys[0]
   const signer = new PrivateKeyWallet({ privateKey, keyType: undefined, nodeProvider: web3.getCurrentNodeProvider() })

@@ -33,6 +33,7 @@ export namespace OraclePriceRequestTypes {
     subscription: HexString;
     from: HexString;
     to: HexString;
+    oracleFees: bigint;
     amount: bigint;
     decimals: bigint;
     fulfilled: boolean;
@@ -52,6 +53,10 @@ export namespace OraclePriceRequestTypes {
     getFulfilled: {
       params: Omit<CallContractParams<{}>, "args">;
       result: CallContractResult<boolean>;
+    };
+    getOracleFees: {
+      params: Omit<CallContractParams<{}>, "args">;
+      result: CallContractResult<bigint>;
     };
     testDebug: {
       params: Omit<CallContractParams<{}>, "args">;
@@ -100,6 +105,14 @@ class Factory extends ContractFactory<
     ): Promise<TestContractResult<boolean>> => {
       return testMethod(this, "getFulfilled", params);
     },
+    getOracleFees: async (
+      params: Omit<
+        TestContractParams<OraclePriceRequestTypes.Fields, never>,
+        "testArgs"
+      >
+    ): Promise<TestContractResult<bigint>> => {
+      return testMethod(this, "getOracleFees", params);
+    },
     testDebug: async (
       params: Omit<
         TestContractParams<OraclePriceRequestTypes.Fields, never>,
@@ -127,7 +140,7 @@ class Factory extends ContractFactory<
     fulfill: async (
       params: TestContractParams<
         OraclePriceRequestTypes.Fields,
-        { retrievedAmount: bigint; amountDecimals: bigint }
+        { lastKnownPrice: bigint; amountDecimals: bigint }
       >
     ): Promise<TestContractResult<null>> => {
       return testMethod(this, "fulfill", params);
@@ -139,8 +152,8 @@ class Factory extends ContractFactory<
 export const OraclePriceRequest = new Factory(
   Contract.fromJson(
     OraclePriceRequestContractJson,
-    "=4+4=1-1+344067407040d24=1+4=1+0=1+0000000104=1+0027e02=2-2+2447455446554c46494c4c45444444444444444444444444444444=1+42=1+726=1+7475726=1+732000a00202=11-1+4=4+7e02402447455446554c46494c4c45444444444444444444444444444444442072657475726e73200003=14+a=1-1+000201=3+00=3+17b2=1+c=1+dce=5-2+17e=1+3=1+a446573746f79696e672=1+182c2=1+73656e64696e67=2+66756e647320626=1+636b2=1+746f=4+b3ce007e0308636=1+6c6c65723a2=2+b2=1-1+73686f756c642062652000=49+e160016017e031d46756c66696c6c696e6720746=1+6520726571756573742e2e2e2e2e2c20022c2000=50+a002037e031246756c66696c6c6564207265717565737420022c2000=24",
-    "0725ea6e0d45ba8e5ef840192b780a902e958e16f4c62cb586ba1a8183125c94"
+    "=16-2+86=1-3+14f=80+17b20c=1+dc=1+0001017e030b44657374726f79696e6720182c2073656e64696e672066756e6473206261636b20746f2000b3ce007e030843616c6c65723a200b2073686f756c642062652000=50+35160016017e031b46756c66696c6c696e67=1+074686=1+20726571756573742e2e2e2c20022c2000=50+a002037e031246756c66696c6c6564207265717565737420022c2000=60+7e031c57696c6c2070617920746865206f7261636c65206d616e61676572200520666f72200620414c5048730c0d0c0dce00010501021602=2+7e010d46756e64732073656e742e2e2e",
+    "4dc8119f620fd0d8268bf2f2e95027f88ad478bbf8742add475784fd1ad61978"
   )
 );
 
@@ -179,6 +192,17 @@ export class OraclePriceRequestInstance extends ContractInstance {
         OraclePriceRequest,
         this,
         "getFulfilled",
+        params === undefined ? {} : params,
+        getContractByCodeHash
+      );
+    },
+    getOracleFees: async (
+      params?: OraclePriceRequestTypes.CallMethodParams<"getOracleFees">
+    ): Promise<OraclePriceRequestTypes.CallMethodResult<"getOracleFees">> => {
+      return callMethod(
+        OraclePriceRequest,
+        this,
+        "getOracleFees",
         params === undefined ? {} : params,
         getContractByCodeHash
       );

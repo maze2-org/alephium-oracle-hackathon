@@ -1,55 +1,87 @@
+ // The OracleOperator is the main contract.It defines the fees and wait for all the subscription to be referenced
+ // An agent will listen on the PriceRequested events and fulfill the requests
+ // You can know what is the operator price to fulfill a request by using getFees()
 Contract OracleOperator (
+    // Will be used later, when introducing VRF to verify the proof
     publicKey: ByteVec,
+    // Subscription subcontract template
     subscriptionTemplateId: ByteVec,
+    // Price request subcontract template
     priceRequestTemplateId: ByteVec,
+    // Allowed consumer subcontract template
     subscriptionAllowedConsumerTemplateId: ByteVec,
+    // Used as an auto increment to attribute a readable id to every subscriptions
     mut subscriptionCount: U256,
+    // Determine the cost of a fulfillment transaction
     mut fees: U256,
+    // Determines the address who has administation rights for this contract.Oracle fees will be transferred to this address
     mut manager: Address
 ) {
-
+    // Events emitted by the contract 
     event AddedNewSubscription(subscriptionId: U256, contractId: ByteVec)
     event PriceRequested(from: ByteVec, to: ByteVec, contractId: ByteVec)
 
+    // Definition of error codes
     enum ErrorCodes {
         InvalidCaller = 1
     }
 
+    // Function to set a new manager for the contract 
     @using(updateFields = true)
     pub fn setNewManager(newManager: Address) -> (){
+        // Checks if the caller is allowed to perform this action
         checkCaller!(callerAddress!() == manager, ErrorCodes.InvalidCaller)
         manager = newManager
     }
 
+    // Function to get the minimum lockable amount for a price fetch request.It represents the number of alph which have to be approved and transferred in the contract 
+    // Basically it is the total of storage cost + oracle fees + a reserve to pay operator fees.
+    pub fn getMinimumLockableAmountForFetchPrice() -> U256 {
+        return 1 alph + // Storage amount - returned when request is destroyed
+            fees + // Fees paid to the operator
+            0.5 alph // To cover operator fees (the difference will be returned with the storage fees on destroy)
+    }
+
+    // Function to get the current manager of the contract 
     pub fn getManager() -> Address {
         return manager
     }
     
+    // Function to get the public key of the contract 
     pub fn getPublicKey() -> ByteVec {
         return publicKey
     }
 
+    // Function to get the current fees of the contract 
     pub fn getFees() -> U256 {
         return fees
     }
 
+    // Function to emit a new price request
     pub fn newPriceRequest(from: ByteVec, to: ByteVec, contractId: ByteVec) -> () {
         emit PriceRequested(from, to, contractId)
     }
 
+    // Function to update the fees of the contract 
     @using(updateFields = true)
     pub fn updateFees(newFees: U256) -> () {
+        // Checks if the caller is allowed to perform this action
         checkCaller!(callerAddress!() == manager, ErrorCodes.InvalidCaller)
         fees = newFees
     }
 
+    // Function to deploy a new subscription contract 
     @using(preapprovedAssets = true, updateFields = true, checkExternalCaller = false)
     pub fn deployNewSubscription() -> () {
         let caller = callerAddress!()
 
+        // Increments the subscription count
         subscriptionCount = subscriptionCount + 1
 
+        // Encodes the immutable and mutable fields of the subscription
         let (encodedImmFields, encodedMutFields) = OracleSubscription.encodeFields!(selfContract!(), subscriptionCount, priceRequestTemplateId, subscriptionAllowedConsumerTemplateId,  caller, 1)
+        
+        // Creates a new subscription contract 
         let contractId = copyCreateSubContract!{caller -> ALPH: 1 alph}(
             u256To16Byte!(subscriptionCount),
             subscriptionTemplateId,
@@ -57,6 +89,7 @@ Contract OracleOperator (
             encodedMutFields
         )
 
+        // Emits an event to signal the addition of a new subscription
         emit AddedNewSubscription(subscriptionCount, contractId)
     }
 }

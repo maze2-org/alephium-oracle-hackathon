@@ -45,6 +45,14 @@ export namespace MinimalistExchangeTypes {
       params: Omit<CallContractParams<{}>, "args">;
       result: CallContractResult<bigint>;
     };
+    getOracleSubscription: {
+      params: Omit<CallContractParams<{}>, "args">;
+      result: CallContractResult<HexString>;
+    };
+    getOracleOperator: {
+      params: Omit<CallContractParams<{}>, "args">;
+      result: CallContractResult<HexString>;
+    };
   }
   export type CallMethodParams<T extends keyof CallMethodTable> =
     CallMethodTable[T]["params"];
@@ -114,6 +122,14 @@ class Factory extends ContractFactory<
     ): Promise<TestContractResult<HexString>> => {
       return testMethod(this, "getOracleSubscription", params);
     },
+    getOracleOperator: async (
+      params: Omit<
+        TestContractParams<MinimalistExchangeTypes.Fields, never>,
+        "testArgs"
+      >
+    ): Promise<TestContractResult<HexString>> => {
+      return testMethod(this, "getOracleOperator", params);
+    },
     getPriceRequest: async (
       params: Omit<
         TestContractParams<MinimalistExchangeTypes.Fields, never>,
@@ -145,8 +161,8 @@ class Factory extends ContractFactory<
 export const MinimalistExchange = new Factory(
   Contract.fromJson(
     MinimalistExchangeContractJson,
-    "=24-2+f9=1-3+18f=150+3=1-1=14+7e0316436f6d706172696e6720616464726573737365733a200120001600a000=14+1400a0031400a003417e040a436f6d706172696e6720022c20022c2000=164+a0037e020a526573756c742069732000=13-1+d=28+16007e021748616e646c696e6720707269636520726571756573742000=12+7e020c=1+6756c66696=1+6c6564203f20000c0d=1+60001004c187e0113507=1+696365207761732066756c66696c6c65640c0d160001027e0209616d6f6f756e743a2000=58",
-    "18ace72ccc3f134f22cbf21b640177c7743f756796b6d067c9422bd6553c3ffc"
+    "=27+1=1-2+5=1-2+1=1+f=184-2+3a=14+7e0315436f6d706172696e67206164647265737365733a200120001600a000=22+1400a0031400a003417e040a436f6d706172696e6720022c20022c2000=148+a0037e020a526573756c742069732000=116",
+    "584734d94687ef80ed8827375e21418d3f7ff913348a157131d4474f07c46650"
   )
 );
 
@@ -187,6 +203,32 @@ export class MinimalistExchangeInstance extends ContractInstance {
         MinimalistExchange,
         this,
         "getAlphPriceInUsd",
+        params === undefined ? {} : params,
+        getContractByCodeHash
+      );
+    },
+    getOracleSubscription: async (
+      params?: MinimalistExchangeTypes.CallMethodParams<"getOracleSubscription">
+    ): Promise<
+      MinimalistExchangeTypes.CallMethodResult<"getOracleSubscription">
+    > => {
+      return callMethod(
+        MinimalistExchange,
+        this,
+        "getOracleSubscription",
+        params === undefined ? {} : params,
+        getContractByCodeHash
+      );
+    },
+    getOracleOperator: async (
+      params?: MinimalistExchangeTypes.CallMethodParams<"getOracleOperator">
+    ): Promise<
+      MinimalistExchangeTypes.CallMethodResult<"getOracleOperator">
+    > => {
+      return callMethod(
+        MinimalistExchange,
+        this,
+        "getOracleOperator",
         params === undefined ? {} : params,
         getContractByCodeHash
       );
