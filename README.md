@@ -76,6 +76,7 @@ npm run build && node dist/src/minimalist-exchange-process.js
 - Provide a website to manage subscriptions easily (display the owner subscriptions, manage their consumers, ...)
 - Refactor the project in order to be able to import it as an npm dependency and use it as an external resource
 - Implement the unit test
+- Store the tokens / alph into the subscription in order to be able to use contract `assetsInContract` instead of storing (and approving them during execution)
 - Auditing security
 
 ## Testing
