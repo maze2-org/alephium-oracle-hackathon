@@ -1,0 +1,156 @@
+{
+  "version": "v2.8.3",
+  "name": "MinimalistExchange",
+  "bytecode": "040710402040294037404540ac40e6010001010007b4a000450d7b1600a100010001010007b4a000450d7b1600a102010000000102a00102000000000106a002c50e7ba00202000000000106a003c5107ba0030201030002004027b417001600a000450d7b00031701a0031400414c0c160013c40de0b6b3a7640000a216001404414c504814035553440f0d16010107a1034a0ea003c54b0b160013c40de0b6b3a7640000a216001404414c504814035553440f0d16010107a10301000002004020b4a000450d7b00041700000317010c0d160001004c120c0d16000102a10105a0015ea003c54c0716000d0c160101061400a103",
+  "codeHash": "141a1505312275577aacc9354cfa5b896deb3a567f25a4b2dc63d2d03fa29931",
+  "fieldsSig": {
+    "names": [
+      "owner",
+      "alphPriceInUsd",
+      "subscriptionContractId",
+      "priceRequestContractId"
+    ],
+    "types": [
+      "Address",
+      "U256",
+      "ByteVec",
+      "ByteVec"
+    ],
+    "isMutable": [
+      true,
+      true,
+      true,
+      true
+    ]
+  },
+  "eventsSig": [
+    {
+      "name": "AlphPriceUpdated",
+      "fieldNames": [
+        "newPrice"
+      ],
+      "fieldTypes": [
+        "U256"
+      ]
+    }
+  ],
+  "functions": [
+    {
+      "name": "setNewOwner",
+      "usePreapprovedAssets": false,
+      "useAssetsInContract": false,
+      "isPublic": true,
+      "paramNames": [
+        "newOwner"
+      ],
+      "paramTypes": [
+        "Address"
+      ],
+      "paramIsMutable": [
+        false
+      ],
+      "returnTypes": []
+    },
+    {
+      "name": "setNewsubScriptionContractId",
+      "usePreapprovedAssets": false,
+      "useAssetsInContract": false,
+      "isPublic": true,
+      "paramNames": [
+        "newSubscriptionContractId"
+      ],
+      "paramTypes": [
+        "ByteVec"
+      ],
+      "paramIsMutable": [
+        false
+      ],
+      "returnTypes": []
+    },
+    {
+      "name": "getAlphPriceInUsd",
+      "usePreapprovedAssets": false,
+      "useAssetsInContract": false,
+      "isPublic": true,
+      "paramNames": [],
+      "paramTypes": [],
+      "paramIsMutable": [],
+      "returnTypes": [
+        "U256"
+      ]
+    },
+    {
+      "name": "getOracleSubscription",
+      "usePreapprovedAssets": false,
+      "useAssetsInContract": false,
+      "isPublic": false,
+      "paramNames": [],
+      "paramTypes": [],
+      "paramIsMutable": [],
+      "returnTypes": [
+        "ByteVec"
+      ]
+    },
+    {
+      "name": "getPriceRequest",
+      "usePreapprovedAssets": false,
+      "useAssetsInContract": false,
+      "isPublic": false,
+      "paramNames": [],
+      "paramTypes": [],
+      "paramIsMutable": [],
+      "returnTypes": [
+        "ByteVec"
+      ]
+    },
+    {
+      "name": "fetchPrice",
+      "usePreapprovedAssets": true,
+      "useAssetsInContract": false,
+      "isPublic": true,
+      "paramNames": [],
+      "paramTypes": [],
+      "paramIsMutable": [],
+      "returnTypes": []
+    },
+    {
+      "name": "completeFetchProcess",
+      "usePreapprovedAssets": false,
+      "useAssetsInContract": false,
+      "isPublic": true,
+      "paramNames": [],
+      "paramTypes": [],
+      "paramIsMutable": [],
+      "returnTypes": []
+    }
+  ],
+  "constants": [],
+  "enums": [
+    {
+      "name": "ErrorCodes",
+      "fields": [
+        {
+          "name": "InvalidCaller",
+          "value": {
+            "type": "U256",
+            "value": "1"
+          }
+        },
+        {
+          "name": "OracleDoesntExist",
+          "value": {
+            "type": "U256",
+            "value": "2"
+          }
+        },
+        {
+          "name": "PriceRequestDoesntExist",
+          "value": {
+            "type": "U256",
+            "value": "4"
+          }
+        }
+      ]
+    }
+  ]
+}

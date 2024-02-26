@@ -1,0 +1,4 @@
+TxScript RegisterSubscription(operator: OracleOperator) {
+    // Register a new subscription on the operator
+    operator.deployNewSubscription{callerAddress!() -> ALPH: 1 alph}()
+}

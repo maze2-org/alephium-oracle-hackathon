@@ -1,0 +1,4 @@
+TxScript FetchPrice(myExchange: MinimalistExchange) {
+    // Register a new subscription on the operator
+    myExchange.fetchPrice{callerAddress!() -> ALPH: 1 alph}()
+}

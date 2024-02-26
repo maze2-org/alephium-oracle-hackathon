@@ -1,0 +1,3 @@
+TxScript AddAllowedConsumer (subscription: OracleSubscription, address: Address) {
+    subscription.addAllowedCaller{callerAddress!() -> ALPH: 1 alph}(address)
+}

@@ -1,0 +1,4 @@
+TxScript CompletePriceFetch(myExchange: MinimalistExchange) {
+    // Register a new subscription on the operator
+    myExchange.completeFetchProcess()
+}

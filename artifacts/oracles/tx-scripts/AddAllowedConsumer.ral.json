@@ -1,0 +1,31 @@
+{
+  "version": "v2.8.3",
+  "name": "AddAllowedConsumer",
+  "bytecodeTemplate": "01010300000008b413c40de0b6b3a7640000a2{1}0d0c{0}0103",
+  "fieldsSig": {
+    "names": [
+      "subscription",
+      "address"
+    ],
+    "types": [
+      "ByteVec",
+      "Address"
+    ],
+    "isMutable": [
+      false,
+      false
+    ]
+  },
+  "functions": [
+    {
+      "name": "main",
+      "usePreapprovedAssets": true,
+      "useAssetsInContract": false,
+      "isPublic": true,
+      "paramNames": [],
+      "paramTypes": [],
+      "paramIsMutable": [],
+      "returnTypes": []
+    }
+  ]
+}

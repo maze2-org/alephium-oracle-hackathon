@@ -1,0 +1,178 @@
+{
+  "version": "v2.8.3",
+  "name": "OracleOperator",
+  "bytecode": "070710194022402b40394049408c010001010007b4a002450d7b1600a102010000000102a00202010000000102ce0002010000000102a001020100030300050616001601160260010001010007b4a002450d7b1600a10101030004004020b41700a0000d2aa100b1a000ce02ce0313046416000d13026417021701160013c40de0b6b3a7640000a2a0006ace0116011602c1170305a00016035f",
+  "codeHash": "77b91eba3bf58081f81c73ddf2a8f86fed041df25ec13e55447d138001c34083",
+  "fieldsSig": {
+    "names": [
+      "publicKey",
+      "subscriptionTemplateId",
+      "priceRequestTemplateId",
+      "subscriptionAllowedConsumerTemplateId",
+      "subscriptionCount",
+      "fees",
+      "manager"
+    ],
+    "types": [
+      "ByteVec",
+      "ByteVec",
+      "ByteVec",
+      "ByteVec",
+      "U256",
+      "U256",
+      "Address"
+    ],
+    "isMutable": [
+      false,
+      false,
+      false,
+      false,
+      true,
+      true,
+      true
+    ]
+  },
+  "eventsSig": [
+    {
+      "name": "AddedNewSubscription",
+      "fieldNames": [
+        "subscriptionId",
+        "contractId"
+      ],
+      "fieldTypes": [
+        "U256",
+        "ByteVec"
+      ]
+    },
+    {
+      "name": "PriceRequested",
+      "fieldNames": [
+        "from",
+        "to",
+        "contractId"
+      ],
+      "fieldTypes": [
+        "ByteVec",
+        "ByteVec",
+        "ByteVec"
+      ]
+    }
+  ],
+  "functions": [
+    {
+      "name": "setNewManager",
+      "usePreapprovedAssets": false,
+      "useAssetsInContract": false,
+      "isPublic": true,
+      "paramNames": [
+        "newManager"
+      ],
+      "paramTypes": [
+        "Address"
+      ],
+      "paramIsMutable": [
+        false
+      ],
+      "returnTypes": []
+    },
+    {
+      "name": "getManager",
+      "usePreapprovedAssets": false,
+      "useAssetsInContract": false,
+      "isPublic": true,
+      "paramNames": [],
+      "paramTypes": [],
+      "paramIsMutable": [],
+      "returnTypes": [
+        "Address"
+      ]
+    },
+    {
+      "name": "getPublicKey",
+      "usePreapprovedAssets": false,
+      "useAssetsInContract": false,
+      "isPublic": true,
+      "paramNames": [],
+      "paramTypes": [],
+      "paramIsMutable": [],
+      "returnTypes": [
+        "ByteVec"
+      ]
+    },
+    {
+      "name": "getFees",
+      "usePreapprovedAssets": false,
+      "useAssetsInContract": false,
+      "isPublic": true,
+      "paramNames": [],
+      "paramTypes": [],
+      "paramIsMutable": [],
+      "returnTypes": [
+        "U256"
+      ]
+    },
+    {
+      "name": "newPriceRequest",
+      "usePreapprovedAssets": false,
+      "useAssetsInContract": false,
+      "isPublic": true,
+      "paramNames": [
+        "from",
+        "to",
+        "contractId"
+      ],
+      "paramTypes": [
+        "ByteVec",
+        "ByteVec",
+        "ByteVec"
+      ],
+      "paramIsMutable": [
+        false,
+        false,
+        false
+      ],
+      "returnTypes": []
+    },
+    {
+      "name": "updateFees",
+      "usePreapprovedAssets": false,
+      "useAssetsInContract": false,
+      "isPublic": true,
+      "paramNames": [
+        "newFees"
+      ],
+      "paramTypes": [
+        "U256"
+      ],
+      "paramIsMutable": [
+        false
+      ],
+      "returnTypes": []
+    },
+    {
+      "name": "deployNewSubscription",
+      "usePreapprovedAssets": true,
+      "useAssetsInContract": false,
+      "isPublic": true,
+      "paramNames": [],
+      "paramTypes": [],
+      "paramIsMutable": [],
+      "returnTypes": []
+    }
+  ],
+  "constants": [],
+  "enums": [
+    {
+      "name": "ErrorCodes",
+      "fields": [
+        {
+          "name": "InvalidCaller",
+          "value": {
+            "type": "U256",
+            "value": "1"
+          }
+        }
+      ]
+    }
+  ]
+}

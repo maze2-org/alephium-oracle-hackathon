@@ -1,0 +1,82 @@
+ // This contract shows how to use the oracle
+
+Contract MinimalistExchange (
+    mut owner: Address,
+    mut alphPriceInUsd: U256,
+    mut subscriptionContractId: ByteVec,
+    mut priceRequestContractId: ByteVec
+) {
+
+    event AlphPriceUpdated (newPrice: U256)
+
+    enum ErrorCodes {
+        InvalidCaller = 1
+        OracleDoesntExist = 2
+        PriceRequestDoesntExist = 4
+    }
+
+    @using(updateFields = true)
+    pub fn setNewOwner(newOwner: Address) -> () {
+        checkCaller!(callerAddress!() == owner, ErrorCodes.InvalidCaller)
+        owner = newOwner
+    }
+    
+    @using(updateFields = true)
+    pub fn setNewsubScriptionContractId(newSubscriptionContractId: ByteVec) -> () {
+        checkCaller!(callerAddress!() == owner, ErrorCodes.InvalidCaller)
+        subscriptionContractId = newSubscriptionContractId
+    }
+
+    pub fn getAlphPriceInUsd () -> U256 {
+        return alphPriceInUsd
+    }
+
+    fn getOracleSubscription() -> OracleSubscription {
+        assert!(contractExists!(subscriptionContractId), ErrorCodes.OracleDoesntExist)
+        return OracleSubscription(subscriptionContractId)
+    }
+    
+    fn getPriceRequest() -> OraclePriceRequest {
+        assert!(contractExists!(priceRequestContractId), ErrorCodes.PriceRequestDoesntExist)
+        return OraclePriceRequest(priceRequestContractId)
+    }
+
+    @using(preapprovedAssets = true, updateFields = true)
+    pub fn fetchPrice() -> () {
+
+        let caller = callerAddress!()
+        emit Debug(`Comparing addressses: ${caller} ${owner}`)
+        checkCaller!(caller == owner, ErrorCodes.InvalidCaller)
+        let oracleSubscription = getOracleSubscription()
+
+        emit Debug(`Comparing ${#}, ${priceRequestContractId}, ${# == priceRequestContractId}`)
+        if (priceRequestContractId == #) {
+            priceRequestContractId = oracleSubscription.requestPrice{caller -> ALPH: 1 alph}(caller, b`ALPH`, b`USD`)
+        } else {
+            if (!contractExists!(priceRequestContractId)) {
+                priceRequestContractId = oracleSubscription.requestPrice{caller -> ALPH: 1 alph}(caller, b`ALPH`, b`USD`)
+            }
+        }
+        emit Debug(`Result is ${priceRequestContractId}`)
+    }
+
+    @using(updateFields = true)
+    pub fn completeFetchProcess() -> () {
+        checkCaller!(callerAddress!() == owner, ErrorCodes.InvalidCaller)
+        let priceRequest = getPriceRequest()
+        let oracleSubscription = getOracleSubscription()
+        emit Debug(`Handling price request ${priceRequest}`)
+        emit Debug(`Fulfilled ? ${priceRequest.getFulfilled()}`)
+        if (priceRequest.getFulfilled()) {
+            emit Debug(`Price was fulfilled`)
+            emit Debug(`amoount: ${priceRequest.getAmount()}`)
+            alphPriceInUsd = priceRequest.getAmount()
+            emit AlphPriceUpdated(alphPriceInUsd)
+
+            if (contractExists!(priceRequestContractId)) {
+                oracleSubscription.destroyPriceRequest(priceRequest)
+                priceRequestContractId = #
+            }
+        }
+    }
+}

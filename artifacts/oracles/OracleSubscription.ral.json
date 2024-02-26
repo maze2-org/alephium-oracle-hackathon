@@ -1,0 +1,190 @@
+{
+  "version": "v2.8.3",
+  "name": "OracleSubscription",
+  "bytecode": "060809124026406840784081409840e0010000000102ce0102010000000102a0000201000103010916004717011601cb17021602c50201030105004020a000b4450d7b1600471701160000024b15160013016413006417031702b413c40de0b6b3a7640000a21601ce0316021603c1170405b11600160460010001010007a000b4450d7b1600a100010000000102ce000201000101000db4a00045b37700021b0d7b0c0c1600010301030306014023a0010d2aa101b1160116021303640c13080413036417041703160013c40de0b6b3a7640000a2a0016ace0216031604c117051601160216050f0cce000104160502",
+  "codeHash": "447e84b5b5ae4b7b4909ba267538dc2a4e8024b3df3040d0742ea4d514077445",
+  "fieldsSig": {
+    "names": [
+      "operator",
+      "subscriptionId",
+      "priceRequestTemplateId",
+      "subscriptionAllowedConsumerTemplateId",
+      "owner",
+      "requestId"
+    ],
+    "types": [
+      "ByteVec",
+      "U256",
+      "ByteVec",
+      "ByteVec",
+      "Address",
+      "U256"
+    ],
+    "isMutable": [
+      false,
+      false,
+      false,
+      false,
+      true,
+      true
+    ]
+  },
+  "eventsSig": [
+    {
+      "name": "NewAllowedCaller",
+      "fieldNames": [
+        "subscriptionContractId",
+        "address",
+        "deployedContractId"
+      ],
+      "fieldTypes": [
+        "ByteVec",
+        "Address",
+        "ByteVec"
+      ]
+    }
+  ],
+  "functions": [
+    {
+      "name": "getSubscriptionId",
+      "usePreapprovedAssets": false,
+      "useAssetsInContract": false,
+      "isPublic": true,
+      "paramNames": [],
+      "paramTypes": [],
+      "paramIsMutable": [],
+      "returnTypes": [
+        "U256"
+      ]
+    },
+    {
+      "name": "getOwner",
+      "usePreapprovedAssets": false,
+      "useAssetsInContract": false,
+      "isPublic": true,
+      "paramNames": [],
+      "paramTypes": [],
+      "paramIsMutable": [],
+      "returnTypes": [
+        "Address"
+      ]
+    },
+    {
+      "name": "isConsumerAddressAllowed",
+      "usePreapprovedAssets": false,
+      "useAssetsInContract": false,
+      "isPublic": true,
+      "paramNames": [
+        "address"
+      ],
+      "paramTypes": [
+        "Address"
+      ],
+      "paramIsMutable": [
+        false
+      ],
+      "returnTypes": [
+        "Bool"
+      ]
+    },
+    {
+      "name": "addAllowedCaller",
+      "usePreapprovedAssets": true,
+      "useAssetsInContract": false,
+      "isPublic": true,
+      "paramNames": [
+        "consumerAddress"
+      ],
+      "paramTypes": [
+        "Address"
+      ],
+      "paramIsMutable": [
+        false
+      ],
+      "returnTypes": []
+    },
+    {
+      "name": "setOwner",
+      "usePreapprovedAssets": false,
+      "useAssetsInContract": false,
+      "isPublic": true,
+      "paramNames": [
+        "newOwner"
+      ],
+      "paramTypes": [
+        "Address"
+      ],
+      "paramIsMutable": [
+        false
+      ],
+      "returnTypes": []
+    },
+    {
+      "name": "getOperator",
+      "usePreapprovedAssets": false,
+      "useAssetsInContract": false,
+      "isPublic": true,
+      "paramNames": [],
+      "paramTypes": [],
+      "paramIsMutable": [],
+      "returnTypes": [
+        "ByteVec"
+      ]
+    },
+    {
+      "name": "destroyPriceRequest",
+      "usePreapprovedAssets": false,
+      "useAssetsInContract": false,
+      "isPublic": true,
+      "paramNames": [
+        "priceRequest"
+      ],
+      "paramTypes": [
+        "ByteVec"
+      ],
+      "paramIsMutable": [
+        false
+      ],
+      "returnTypes": []
+    },
+    {
+      "name": "requestPrice",
+      "usePreapprovedAssets": true,
+      "useAssetsInContract": false,
+      "isPublic": true,
+      "paramNames": [
+        "caller",
+        "from",
+        "to"
+      ],
+      "paramTypes": [
+        "Address",
+        "ByteVec",
+        "ByteVec"
+      ],
+      "paramIsMutable": [
+        false,
+        false,
+        false
+      ],
+      "returnTypes": [
+        "ByteVec"
+      ]
+    }
+  ],
+  "constants": [],
+  "enums": [
+    {
+      "name": "ErrorCodes",
+      "fields": [
+        {
+          "name": "InvalidCaller",
+          "value": {
+            "type": "U256",
+            "value": "1"
+          }
+        }
+      ]
+    }
+  ]
+}

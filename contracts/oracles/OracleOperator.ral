@@ -1,0 +1,62 @@
+Contract OracleOperator (
+    publicKey: ByteVec,
+    subscriptionTemplateId: ByteVec,
+    priceRequestTemplateId: ByteVec,
+    subscriptionAllowedConsumerTemplateId: ByteVec,
+    mut subscriptionCount: U256,
+    mut fees: U256,
+    mut manager: Address
+) {
+
+    event AddedNewSubscription(subscriptionId: U256, contractId: ByteVec)
+    event PriceRequested(from: ByteVec, to: ByteVec, contractId: ByteVec)
+
+    enum ErrorCodes {
+        InvalidCaller = 1
+    }
+
+    @using(updateFields = true)
+    pub fn setNewManager(newManager: Address) -> (){
+        checkCaller!(callerAddress!() == manager, ErrorCodes.InvalidCaller)
+        manager = newManager
+    }
+
+    pub fn getManager() -> Address {
+        return manager
+    }
+    
+    pub fn getPublicKey() -> ByteVec {
+        return publicKey
+    }
+
+    pub fn getFees() -> U256 {
+        return fees
+    }
+
+    pub fn newPriceRequest(from: ByteVec, to: ByteVec, contractId: ByteVec) -> () {
+        emit PriceRequested(from, to, contractId)
+    }
+
+    @using(updateFields = true)
+    pub fn updateFees(newFees: U256) -> () {
+        checkCaller!(callerAddress!() == manager, ErrorCodes.InvalidCaller)
+        fees = newFees
+    }
+
+    @using(preapprovedAssets = true, updateFields = true, checkExternalCaller = false)
+    pub fn deployNewSubscription() -> () {
+        let caller = callerAddress!()
+
+        subscriptionCount = subscriptionCount + 1
+
+        let (encodedImmFields, encodedMutFields) = OracleSubscription.encodeFields!(selfContract!(), subscriptionCount, priceRequestTemplateId, subscriptionAllowedConsumerTemplateId,  caller, 1)
+        let contractId = copyCreateSubContract!{caller -> ALPH: 1 alph}(
+            u256To16Byte!(subscriptionCount),
+            subscriptionTemplateId,
+            encodedImmFields,
+            encodedMutFields
+        )
+
+        emit AddedNewSubscription(subscriptionCount, contractId)
+    }
+}

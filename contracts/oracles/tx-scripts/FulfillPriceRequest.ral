@@ -1,0 +1,5 @@
+TxScript FulfillPriceRequest(priceRequest: OraclePriceRequest, amount: U256, decimals: U256) {
+    // Operator fulfill the price request
+    emit Debug(`Fulfilling request ${priceRequest}, ${amount}, ${decimals}`)
+    priceRequest.fulfill(amount, decimals)
+}

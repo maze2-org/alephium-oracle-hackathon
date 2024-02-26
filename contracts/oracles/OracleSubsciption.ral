@@ -1,0 +1,91 @@
+Contract OracleSubscription (
+    operator: OracleOperator,
+    subscriptionId: U256,
+    priceRequestTemplateId: ByteVec,
+    subscriptionAllowedConsumerTemplateId: ByteVec,
+    mut owner: Address,
+    mut requestId: U256
+) {
+    event NewAllowedCaller(subscriptionContractId: ByteVec, address: Address, deployedContractId: ByteVec)
+
+    enum ErrorCodes {
+        InvalidCaller = 1
+    }
+
+    pub fn getSubscriptionId() -> U256 {
+        return subscriptionId
+    }
+
+    pub fn getOwner() -> Address {
+        return owner
+    }
+
+    pub fn isConsumerAddressAllowed(address: Address) -> Bool {
+        let path = toByteVec!(address)
+        let consumerSubcontractId = subContractId!(path)
+
+        return contractExists!(consumerSubcontractId)
+    }
+
+
+    @using(preapprovedAssets = true)
+    pub fn addAllowedCaller(consumerAddress: Address) -> () {
+        checkCaller!(owner == callerAddress!(), ErrorCodes.InvalidCaller)
+
+        emit Debug(`Adding new caller ${consumerAddress} to the list of allowed caller of subscription ${subscriptionId}`)
+
+        let path = toByteVec!(consumerAddress)
+
+        if (!isConsumerAddressAllowed(consumerAddress)) {
+            let (encodedImmFields, encodedMutFields) = OracleSubscriptionAllowedConsumer.encodeFields!(consumerAddress)
+            let contractId = copyCreateSubContract!{callerAddress!() -> ALPH: 1 alph}(
+                path,
+                subscriptionAllowedConsumerTemplateId,
+                encodedImmFields,
+                encodedMutFields
+            )
+            emit NewAllowedCaller(selfContractId!(), consumerAddress, contractId)
+        }
+
+    }
+
+    @using(updateFields = true)
+    pub fn setOwner(newOwner: Address) -> () {
+        checkCaller!(owner == callerAddress!(), ErrorCodes.InvalidCaller)
+        owner = newOwner
+    }
+
+    pub fn getOperator() -> OracleOperator {
+        return operator
+    }
+
+    pub fn destroyPriceRequest(priceRequest: OraclePriceRequest) -> () {
+        emit Debug(`Caller: ${callerAddress!()}, contract calling: ${contractIdToAddress!(callerContractId!())}, contract allowed ? ${isConsumerAddressAllowed(contractIdToAddress!(callerContractId!()))}`)
+        checkCaller!(callerAddress!() == owner || isConsumerAddressAllowed(contractIdToAddress!(callerContractId!())), ErrorCodes.InvalidCaller)
+        emit Debug(`Authorized...`)
+        priceRequest.destroy()
+    }
+
+    @using(preapprovedAssets = true, updateFields = true, checkExternalCaller = false)
+    pub fn requestPrice(caller: Address, from: ByteVec, to: ByteVec) -> ByteVec {
+
+        emit Debug(`Balance in subscription request ${caller}`)
+        emit Debug(`remaining tokens ${tokenRemaining!(caller, ALPH)}`)
+
+
+        requestId = requestId + 1
+
+        let (encodedImmFields, encodedMutFields) = OraclePriceRequest.encodeFields!(selfContract!(), from, to, 0, 8, false)
+        
+        // let contractId = copyCreateSubContract!{selfAddress!() -> ALPH: 4 alph}(
+        let contractId = copyCreateSubContract!{caller -> ALPH: 1 alph}(
+            u256To16Byte!(requestId),
+            priceRequestTemplateId,
+            encodedImmFields,
+            encodedMutFields
+        )
+
+        operator.newPriceRequest(from, to, contractId)
+        return contractId
+    }
+}

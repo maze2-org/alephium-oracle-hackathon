@@ -1,0 +1,50 @@
+Contract OraclePriceRequest (
+    subscription: OracleSubscription,
+    from: ByteVec,
+    to: ByteVec,
+    mut amount: U256,
+    mut decimals: U256,
+    mut fulfilled: Bool
+) {
+    event RequestFulfilled(subscription: OracleSubscription, from: ByteVec, to: ByteVec, amount: U256, fulfilled: Bool)
+
+    enum ErrorCodes {
+        InvalidCaller = 1
+    }
+
+    pub fn getFulfilled() -> Bool {
+        emit Debug(`GETFULFILLEDDDDDDDDDDDDDDDD returns ${fulfilled}`)
+        return fulfilled
+    }
+
+    pub fn testDebug() -> Bool {
+        emit Debug(`GETFULFILLEDDDDDDDDDDDDDDDD returns ${fulfilled}`)
+        return true
+    }
+
+    pub fn getAmount() -> U256 {
+        return amount
+    }
+
+    @using(assetsInContract = true)
+    pub fn destroy() -> () {
+        emit Debug(`Destoying ${selfAddress!()}, sending funds back to ${subscription.getOwner()}`)
+        emit Debug(`caller: ${callerContractId!()} should be ${contractId!(subscription)}`)
+        // checkCaller!(callerAddress!(), requestedByContractAddress, ErrorCodes.InvalidCaller)
+        let callerContractAddress = contractIdToAddress!(callerContractId!())
+
+        checkCaller!(contractAddress!(subscription) == callerContractAddress, ErrorCodes.InvalidCaller)
+        destroySelf!(subscription.getOwner())
+    }
+
+    @using(updateFields = true)
+    pub fn fulfill(retrievedAmount: U256, amountDecimals: U256) -> () {
+        emit Debug(`Fulfilling the request....., ${retrievedAmount}, ${amountDecimals}`)
+        checkCaller!(subscription.getOperator().getManager() == callerAddress!(), ErrorCodes.InvalidCaller)
+        amount = retrievedAmount
+        decimals = amountDecimals
+        fulfilled = true
+        emit Debug(`Fulfilled request ${fulfilled}, ${true}`)
+        emit RequestFulfilled(subscription, from, to, amount, fulfilled)
+    }
+}

@@ -1,0 +1,133 @@
+{
+  "version": "v2.8.3",
+  "name": "OraclePriceRequest",
+  "bytecode": "060509111a4033405e010000000102a002020100000001020302010000000102a0000201020001000eb3771700ce00771600450d7b0c0dce000101b00100020200180c0d0c0dce0001050101b4450d7b1600a1001601a10103a10205ce00ce01ce02a000a00273",
+  "codeHash": "fa00fda9cdd46f4325257dbaa111ffa00eae316907e61d3774c5371d30373c5b",
+  "fieldsSig": {
+    "names": [
+      "subscription",
+      "from",
+      "to",
+      "amount",
+      "decimals",
+      "fulfilled"
+    ],
+    "types": [
+      "ByteVec",
+      "ByteVec",
+      "ByteVec",
+      "U256",
+      "U256",
+      "Bool"
+    ],
+    "isMutable": [
+      false,
+      false,
+      false,
+      true,
+      true,
+      true
+    ]
+  },
+  "eventsSig": [
+    {
+      "name": "RequestFulfilled",
+      "fieldNames": [
+        "subscription",
+        "from",
+        "to",
+        "amount",
+        "fulfilled"
+      ],
+      "fieldTypes": [
+        "ByteVec",
+        "ByteVec",
+        "ByteVec",
+        "U256",
+        "Bool"
+      ]
+    }
+  ],
+  "functions": [
+    {
+      "name": "getFulfilled",
+      "usePreapprovedAssets": false,
+      "useAssetsInContract": false,
+      "isPublic": true,
+      "paramNames": [],
+      "paramTypes": [],
+      "paramIsMutable": [],
+      "returnTypes": [
+        "Bool"
+      ]
+    },
+    {
+      "name": "testDebug",
+      "usePreapprovedAssets": false,
+      "useAssetsInContract": false,
+      "isPublic": true,
+      "paramNames": [],
+      "paramTypes": [],
+      "paramIsMutable": [],
+      "returnTypes": [
+        "Bool"
+      ]
+    },
+    {
+      "name": "getAmount",
+      "usePreapprovedAssets": false,
+      "useAssetsInContract": false,
+      "isPublic": true,
+      "paramNames": [],
+      "paramTypes": [],
+      "paramIsMutable": [],
+      "returnTypes": [
+        "U256"
+      ]
+    },
+    {
+      "name": "destroy",
+      "usePreapprovedAssets": false,
+      "useAssetsInContract": true,
+      "isPublic": true,
+      "paramNames": [],
+      "paramTypes": [],
+      "paramIsMutable": [],
+      "returnTypes": []
+    },
+    {
+      "name": "fulfill",
+      "usePreapprovedAssets": false,
+      "useAssetsInContract": false,
+      "isPublic": true,
+      "paramNames": [
+        "retrievedAmount",
+        "amountDecimals"
+      ],
+      "paramTypes": [
+        "U256",
+        "U256"
+      ],
+      "paramIsMutable": [
+        false,
+        false
+      ],
+      "returnTypes": []
+    }
+  ],
+  "constants": [],
+  "enums": [
+    {
+      "name": "ErrorCodes",
+      "fields": [
+        {
+          "name": "InvalidCaller",
+          "value": {
+            "type": "U256",
+            "value": "1"
+          }
+        }
+      ]
+    }
+  ]
+}

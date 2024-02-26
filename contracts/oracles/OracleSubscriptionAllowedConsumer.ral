@@ -1,0 +1,7 @@
+Contract OracleSubscriptionAllowedConsumer (
+    consumerAddress: Address
+) {
+   pub fn getConsumerAddress() -> Address {
+    return consumerAddress
+   }
+}

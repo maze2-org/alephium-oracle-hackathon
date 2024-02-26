@@ -1,0 +1,4 @@
+TxScript RequestPrice(subscription: OracleSubscription, from: ByteVec, to: ByteVec) {
+    // Register a new subscription on the operator
+    subscription.requestPrice{callerAddress!() -> ALPH: 1 alph}(callerAddress!(), from, to)
+}
