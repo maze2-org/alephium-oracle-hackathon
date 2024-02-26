@@ -41,7 +41,7 @@ You can also run the dapp example : https://github.com/maze2-org/alephium-hackat
 This app is an example of how to run a dapp which consume the oracle price feeder.
 It also shows how to add / remove consumer for the subscription
 
-
+![alt text](doc/images/dapp-sample.png)
 
 
 ## Start a local devnet for testing and development
