@@ -2,9 +2,13 @@
 
 > Important: This project is not production ready. It is a basic POC developed quickly to participate to the Hackathon. It requires security check, auditt and refactoring to be used in production.
 
+## Oracle price fetch workflow
+
+![Diagram](doc/images/price-fetch-workflow.png)
+
 ## Process to run and test the project
 
-Assuming you got the local devnet installed on your mahchine following this guide : https://wiki.alephium.org/full-node/devnet
+Assuming you got the local devnet installed on your mahchine following this guide : <https://wiki.alephium.org/full-node/devnet>
 
 ```bash
 # Installing dependencies
@@ -32,7 +36,7 @@ npm run build && node dist/src/minimalist-exchange-process.js
 
 ## Start a local devnet for testing and development
 
-Please refer to the documentation here: https://wiki.alephium.org/full-node/devnet
+Please refer to the documentation here: <https://wiki.alephium.org/full-node/devnet>
 
 ## Compile and deploys
 
@@ -49,11 +53,10 @@ The deploymnet script is actually deploying :
 
 ## Running the oracle
 
-A basic scripting has been created. This is not a script to be run in production. 
+A basic scripting has been created. This is not a script to be run in production.
 Ideally, a nestjs api would listen / store the requests to be performed and handle errors properly.
 
 The script is actually a loop which executes request every 1s until you stop the script.
-
 
 ```bash
 npm run build && node dist/src/operator-fullfill-requests.js
