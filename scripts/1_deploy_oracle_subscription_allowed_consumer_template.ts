@@ -16,8 +16,6 @@ const deployOracleSubscriptionAllowedConsumerTemplate: DeployFunction<Settings> 
       consumerAddress: deployer.account.address
     }
   })
-  console.log('Oracle price request contract id: ' + result.contractInstance.contractId)
-  console.log('Oracle price request address: ' + result.contractInstance.address)
 }
 
 export default deployOracleSubscriptionAllowedConsumerTemplate

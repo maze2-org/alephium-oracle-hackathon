@@ -22,8 +22,6 @@ const deployOracleSubscriptionTemplate: DeployFunction<Settings> = async (
       owner: deployer.account.address
     }
   })
-  console.log('Oracle subscription template contract id: ' + result.contractInstance.contractId)
-  console.log('Oracle subscription template address: ' + result.contractInstance.address)
 }
 
 export default deployOracleSubscriptionTemplate

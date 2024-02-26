@@ -1,7 +1,7 @@
 import { Deployer, DeployFunction, Network } from '@alephium/cli'
 import configuration, { Settings } from '../alephium.config'
 import { MinimalistExchange, AddAllowedConsumer, RegisterSubscription } from '../artifacts/ts'
-import { ExecuteScriptResult, ONE_ALPH, web3 } from '@alephium/web3'
+import { addressFromContractId, ExecuteScriptResult, ONE_ALPH, web3 } from '@alephium/web3'
 import { PrivateKeyWallet } from '@alephium/web3-wallet'
 import { ContractEventsByTxId } from '@alephium/web3/dist/src/api/api-alephium'
 
@@ -17,8 +17,6 @@ const deployOracleOperator: DeployFunction<Settings> = async (
     console.info('The exchange demo is not supposed to be deployed on this network')
     return
   }
-
-  console.log('Starting deploying exchange demo')
 
   web3.setCurrentNodeProvider('http://127.0.0.1:22973')
 
@@ -58,7 +56,11 @@ const deployOracleOperator: DeployFunction<Settings> = async (
     process.exit(5)
   }
 
-  console.log('Subscription contract id : ', subscriptionContractId)
+  console.log(
+    '\n------------------\nNEXT_SUBSCRIPTION_ADDRESS=' +
+      addressFromContractId(subscriptionContractId) +
+      '\n------------------\n'
+  )
 
   const result = await deployer.deployContract(MinimalistExchange, {
     // The initial states of the faucet contract
@@ -69,8 +71,9 @@ const deployOracleOperator: DeployFunction<Settings> = async (
       subscriptionContractId: subscriptionContractId
     }
   })
-  console.log('Exchange contract id: ' + result.contractInstance.contractId)
-  console.log('Exchange address id: ' + result.contractInstance.address)
+  console.log(
+    '\n------------------\nNEXT_MINIMAL_EXCHANGE_ADDRESS=' + result.contractInstance.address + '\n------------------\n'
+  )
 
   // Add the contract in the consumer list
   subscription = await AddAllowedConsumer.execute(exchangeOwnerSigner, {

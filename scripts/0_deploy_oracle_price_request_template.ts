@@ -21,8 +21,6 @@ const deployOraclePriceRequestTemplate: DeployFunction<Settings> = async (
       oracleFees: 0n
     }
   })
-  console.log('Oracle price request contract id: ' + result.contractInstance.contractId)
-  console.log('Oracle price request address: ' + result.contractInstance.address)
 }
 
 export default deployOraclePriceRequestTemplate

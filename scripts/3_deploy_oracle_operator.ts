@@ -25,8 +25,9 @@ const deployOracleOperator: DeployFunction<Settings> = async (
       manager: deployer.account.address
     }
   })
-  console.log('Oracle operator contract id: ' + result.contractInstance.contractId)
-  console.log('Oracle operator address: ' + result.contractInstance.address)
+  console.log(
+    '\n------------------\nNEXT_OPERATOR_ADDRESS=' + result.contractInstance.address + '\n------------------\n'
+  )
 }
 
 export default deployOracleOperator
